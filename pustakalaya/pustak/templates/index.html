@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pustakalaya</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    
+    <h2 class="text-center mb-4">Pustakalaya - Library Management</h2>
+
+    <div class="row">
+        
+        <!-- FORM SECTION -->
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        {% if book_to_edit %}Edit Book{% else %}Add Book{% endif %}
+                    </h4>
+                </div>
+
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        {% if book_to_edit %}
+                            <input type="hidden" name="book_id" value="{{ book_to_edit.id }}">
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" name="name" 
+                                   value="{{ book_to_edit.name|default:'' }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Book Name</label>
+                            <input type="text" class="form-control" name="book_name" 
+                                   value="{{ book_to_edit.book_name|default:'' }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Author</label>
+                            <input type="text" class="form-control" name="author" 
+                                   value="{{ book_to_edit.author|default:'' }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" name="category" required>
+                                <option value="">Select category</option>
+                                <option {% if book_to_edit.category == 'Science' %}selected{% endif %}>Science</option>
+                                <option {% if book_to_edit.category == 'Computer' %}selected{% endif %}>Computer</option>
+                                <option {% if book_to_edit.category == 'Literature' %}selected{% endif %}>Literature</option>
+                                <option {% if book_to_edit.category == 'Management' %}selected{% endif %}>Management</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">ISBN Number</label>
+                                <input type="text" class="form-control" name="isbn_number" 
+                                       value="{{ book_to_edit.isbn_number|default:'' }}" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Quantity</label>
+                                <input type="number" class="form-control" name="quantity" 
+                                       value="{{ book_to_edit.quantity|default:'1' }}" required>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            {% if book_to_edit %}
+                                <button type="submit" class="btn btn-warning flex-fill">Update Book</button>
+                                <a href="{% url 'book_list' %}" class="btn btn-secondary">Cancel</a>
+                            {% else %}
+                                <button type="submit" class="btn btn-success flex-fill">Save Book</button>
+                                <button type="reset" class="btn btn-secondary">Clear</button>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOOKS LIST SECTION -->
+        <div class="col-md-7">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Books List ({{ books|length }})</h4>
+                </div>
+                
+                <div class="card-body p-0">
+                    {% if books %}
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Book Name</th>
+                                    <th>Author</th>
+                                    <th>Category</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for book in books %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ book.book_name }}</td>
+                                    <td>{{ book.author }}</td>
+                                    <td><span class="badge bg-info">{{ book.category }}</span></td>
+                                    <td>
+                                        <a href="?edit={{ book.id }}" class="btn btn-sm btn-warning">Edit</a>
+                                        <a href="{% url 'delete_book' book.id %}" 
+                                           class="btn btn-sm btn-danger"
+                                           onclick="return confirm('Delete this book?')">Delete</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <p>No books yet. Add your first book!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
