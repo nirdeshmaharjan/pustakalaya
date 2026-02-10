@@ -30,6 +30,7 @@
                     <form method="POST">
                         {% csrf_token %}
                         
+                        
                         {% if book_to_edit %}
                             <input type="hidden" name="book_id" value="{{ book_to_edit.id }}">
                         {% endif %}

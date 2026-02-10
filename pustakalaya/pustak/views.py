@@ -45,7 +45,7 @@ def book_list(request):
         'book_to_edit': book_to_edit
     })
 
-
+@login_required(login_url="login_page")
 def delete_book(request, book_id):
     Book.objects.get(id=book_id).delete()
     return redirect('book_list')

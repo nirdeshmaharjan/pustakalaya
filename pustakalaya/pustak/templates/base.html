@@ -62,11 +62,13 @@
 
 
 {% if messages %}
-<script>
     {% for message in messages %}
+    <script>
+
     alert('{{message}}')
+    </script>
+
     {% endfor %}
-</script>
 {% endif %}
 
 </body>
